@@ -1,0 +1,934 @@
+{
+  "name": "claude-sessions",
+  "displayName": "Claude Sessions",
+  "description": "Manage multiple Claude Code terminal sessions across projects",
+  "version": "0.8.0",
+  "publisher": "yesouicom",
+  "engines": {
+    "vscode": "^1.99.0"
+  },
+  "categories": [
+    "Other"
+  ],
+  "main": "./out/extension.js",
+  "activationEvents": [],
+  "contributes": {
+    "viewsContainers": {
+      "activitybar": [
+        {
+          "id": "claude-sessions",
+          "title": "Claude Sessions",
+          "icon": "resources/icon.svg"
+        }
+      ],
+      "panel": [
+        {
+          "id": "claude-sessions-panel",
+          "title": "Claude Message",
+          "icon": "resources/icon.svg"
+        }
+      ]
+    },
+    "views": {
+      "claude-sessions": [
+        {
+          "id": "claudeSessions.projects",
+          "name": "Projets",
+          "initialSize": 8
+        },
+        {
+          "id": "claudeSessions.active",
+          "name": "Sessions",
+          "initialSize": 8
+        },
+        {
+          "id": "claudeSessions.espaces",
+          "name": "Espaces",
+          "visibility": "visible",
+          "initialSize": 3
+        },
+        {
+          "id": "claudeSessions.settings",
+          "name": "Reglages",
+          "visibility": "collapsed",
+          "initialSize": 3
+        }
+      ],
+      "claude-sessions-panel": [
+        {
+          "id": "claudeSessions.input",
+          "type": "webview",
+          "name": "Message",
+          "visibility": "visible"
+        }
+      ]
+    },
+    "commands": [
+      {
+        "command": "claudeSessions.newSession",
+        "title": "Nouvelle session",
+        "icon": "$(add)"
+      },
+      {
+        "command": "claudeSessions.searchProject",
+        "title": "Rechercher un projet",
+        "icon": "$(search)"
+      },
+      {
+        "command": "claudeSessions.addProject",
+        "title": "Ajouter un projet",
+        "icon": "$(add)"
+      },
+      {
+        "command": "claudeSessions.switchSession",
+        "title": "Basculer vers cette session"
+      },
+      {
+        "command": "claudeSessions.stopSession",
+        "title": "Fermer la session",
+        "icon": "$(close)"
+      },
+      {
+        "command": "claudeSessions.refreshProjects",
+        "title": "Rafraichir",
+        "icon": "$(refresh)"
+      },
+      {
+        "command": "claudeSessions.filterAll",
+        "title": "Filtre: tous les projets",
+        "icon": "$(eye)"
+      },
+      {
+        "command": "claudeSessions.filterActive",
+        "title": "Filtre: sessions actives",
+        "icon": "$(filter-filled)"
+      },
+      {
+        "command": "claudeSessions.filterFocused",
+        "title": "Filtre: projet en cours",
+        "icon": "$(target)"
+      },
+      {
+        "command": "claudeSessions.searchSession",
+        "title": "Rechercher une session",
+        "icon": "$(search)"
+      },
+      {
+        "command": "claudeSessions.toggleFullView",
+        "title": "Plein ecran terminal",
+        "icon": "$(screen-full)"
+      },
+      {
+        "command": "claudeSessions.globalNotifMuted",
+        "title": "Notifications globales: Muet",
+        "icon": "$(bell-slash)"
+      },
+      {
+        "command": "claudeSessions.globalNotifNotify",
+        "title": "Notifications globales: Popup",
+        "icon": "$(bell)"
+      },
+      {
+        "command": "claudeSessions.globalNotifSound",
+        "title": "Notifications globales: Son",
+        "icon": "$(unmute)"
+      },
+      {
+        "command": "claudeSessions.globalNotifNotifySound",
+        "title": "Notifications globales: Popup + Son",
+        "icon": "$(megaphone)"
+      },
+      {
+        "command": "claudeSessions.cycleNotify",
+        "title": "Changer le mode de notification",
+        "icon": "$(bell)"
+      },
+      {
+        "command": "claudeSessions.cycleNotifyMuted",
+        "title": "Notifications: Muet — cliquer pour activer",
+        "icon": "$(bell-slash)"
+      },
+      {
+        "command": "claudeSessions.cycleNotifyNotify",
+        "title": "Notifications: Popup — cliquer pour changer",
+        "icon": "$(bell)"
+      },
+      {
+        "command": "claudeSessions.cycleNotifySound",
+        "title": "Notifications: Son — cliquer pour changer",
+        "icon": "$(unmute)"
+      },
+      {
+        "command": "claudeSessions.cycleNotifyNotifySound",
+        "title": "Notifications: Popup + Son — cliquer pour changer",
+        "icon": "$(megaphone)"
+      },
+      {
+        "command": "claudeSessions.testSound",
+        "title": "Tester le son de notification",
+        "icon": "$(play)"
+      },
+      {
+        "command": "claudeSessions.newFile",
+        "title": "Nouveau fichier",
+        "icon": "$(new-file)"
+      },
+      {
+        "command": "claudeSessions.newFolder",
+        "title": "Nouveau dossier",
+        "icon": "$(new-folder)"
+      },
+      {
+        "command": "claudeSessions.renameItem",
+        "title": "Renommer"
+      },
+      {
+        "command": "claudeSessions.deleteItem",
+        "title": "Supprimer"
+      },
+      {
+        "command": "claudeSessions.copyPath",
+        "title": "Copier le chemin"
+      },
+      {
+        "command": "claudeSessions.copyRelativePath",
+        "title": "Copier le chemin relatif"
+      },
+      {
+        "command": "claudeSessions.revealInExplorer",
+        "title": "Voir dans l'explorateur VS Code",
+        "icon": "$(folder-opened)"
+      },
+      {
+        "command": "claudeSessions.openInTerminal",
+        "title": "Ouvrir dans le terminal"
+      },
+      {
+        "command": "claudeSessions.openToSide",
+        "title": "Ouvrir a cote"
+      },
+      {
+        "command": "claudeSessions.copyItem",
+        "title": "Copier"
+      },
+      {
+        "command": "claudeSessions.cutItem",
+        "title": "Couper"
+      },
+      {
+        "command": "claudeSessions.pasteItem",
+        "title": "Coller"
+      },
+      {
+        "command": "claudeSessions.findInFolder",
+        "title": "Rechercher dans le dossier"
+      },
+      {
+        "command": "claudeSessions.collapseAll",
+        "title": "Tout replier",
+        "icon": "$(collapse-all)"
+      },
+      {
+        "command": "claudeSessions.applyLayout",
+        "title": "Claude Sessions: Appliquer la disposition recommandee"
+      },
+      {
+        "command": "claudeSessions.showMessagePanel",
+        "title": "Claude Sessions: Afficher le volet Message"
+      },
+      {
+        "command": "claudeSessions.exportConfig",
+        "title": "Claude Sessions: Exporter la configuration (Global)"
+      },
+      {
+        "command": "claudeSessions.revealInOS",
+        "title": "Ouvrir dans le gestionnaire de fichiers"
+      },
+      {
+        "command": "claudeSessions.sendPathToTerminal",
+        "title": "Envoyer le chemin au terminal"
+      },
+      {
+        "command": "claudeSessions.downloadFile",
+        "title": "Telecharger / Enregistrer sous..."
+      },
+      {
+        "command": "claudeSessions.moveItem",
+        "title": "Deplacer vers..."
+      },
+      {
+        "command": "claudeSessions.configureSound",
+        "title": "Claude Sessions: Configurer le son de notification",
+        "icon": "$(gear)"
+      },
+      {
+        "command": "claudeSessions.downloadFolder",
+        "title": "Telecharger en ZIP"
+      },
+      {
+        "command": "claudeSessions.toggleSort",
+        "title": "Trier les sessions",
+        "icon": "$(sort-precedence)"
+      },
+      {
+        "command": "claudeSessions.filterSessionAll",
+        "title": "Filtre: toutes les sessions",
+        "icon": "$(list-flat)"
+      },
+      {
+        "command": "claudeSessions.filterSessionWorking",
+        "title": "Filtre: en cours",
+        "icon": "$(sync)"
+      },
+      {
+        "command": "claudeSessions.filterSessionUnread",
+        "title": "Filtre: non lus",
+        "icon": "$(mail)"
+      },
+      {
+        "command": "claudeSessions.filterSessionRead",
+        "title": "Filtre: lus",
+        "icon": "$(check)"
+      },
+      {
+        "command": "claudeSessions.espaces.save",
+        "title": "Sauvegarder les sessions actuelles",
+        "icon": "$(save)"
+      },
+      {
+        "command": "claudeSessions.espaces.restore",
+        "title": "Lancer le groupe",
+        "icon": "$(play)"
+      },
+      {
+        "command": "claudeSessions.espaces.stop",
+        "title": "Arreter les sessions du groupe",
+        "icon": "$(debug-stop)"
+      },
+      {
+        "command": "claudeSessions.espaces.rename",
+        "title": "Renommer le groupe",
+        "icon": "$(edit)"
+      },
+      {
+        "command": "claudeSessions.espaces.delete",
+        "title": "Supprimer le groupe",
+        "icon": "$(trash)"
+      },
+      {
+        "command": "claudeSessions.espaces.focus",
+        "title": "Focaliser cet espace",
+        "icon": "$(target)"
+      },
+      {
+        "command": "claudeSessions.espaces.search",
+        "title": "Rechercher un espace",
+        "icon": "$(search)"
+      },
+      {
+        "command": "claudeSessions.espaces.new",
+        "title": "Nouvel espace",
+        "icon": "$(add)"
+      },
+      {
+        "command": "claudeSessions.espaces.filterAll",
+        "title": "Filtre: tous les espaces",
+        "icon": "$(list-flat)"
+      },
+      {
+        "command": "claudeSessions.espaces.filterActive",
+        "title": "Filtre: espaces actifs",
+        "icon": "$(filter-filled)"
+      },
+      {
+        "command": "claudeSessions.espaces.sort",
+        "title": "Trier les espaces",
+        "icon": "$(sort-precedence)"
+      },
+      {
+        "command": "claudeSessions.sessionScopeAll",
+        "title": "Scope: toutes les sessions",
+        "icon": "$(globe)"
+      },
+      {
+        "command": "claudeSessions.sessionScopeFocus",
+        "title": "Scope: espace focus",
+        "icon": "$(target)"
+      },
+      {
+        "command": "claudeSessions.sessionScopeActive",
+        "title": "Scope: espaces actifs",
+        "icon": "$(folder-opened)"
+      },
+      {
+        "command": "claudeSessions.setting.sound",
+        "title": "Reglage son de notification"
+      },
+      {
+        "command": "claudeSessions.setting.resume",
+        "title": "Reglage reprise auto"
+      },
+      {
+        "command": "claudeSessions.setting.fullView",
+        "title": "Reglage plein ecran"
+      },
+      {
+        "command": "claudeSessions.setting.scopeEditors",
+        "title": "Reglage editeurs par session"
+      },
+      {
+        "command": "claudeSessions.setting.tmate",
+        "title": "Reglage tmate"
+      },
+      {
+        "command": "claudeSessions.setting.projectsRoot",
+        "title": "Reglage dossier racine"
+      },
+      {
+        "command": "claudeSessions.setting.espaceFilter",
+        "title": "Reglage filtre espaces"
+      },
+      {
+        "command": "claudeSessions.setting.sessionScope",
+        "title": "Reglage scope sessions"
+      },
+      {
+        "command": "claudeSessions.setting.volume",
+        "title": "Reglage volume notification"
+      },
+      {
+        "command": "claudeSessions.setting.preCommand",
+        "title": "Reglage pre-commande"
+      },
+      {
+        "command": "claudeSessions.setting.initMessage",
+        "title": "Reglage message init"
+      },
+      {
+        "command": "claudeSessions.setting.autoInitMessage",
+        "title": "Reglage message auto init"
+      },
+      {
+        "command": "claudeSessions.setting.autoPreCommand",
+        "title": "Reglage pre-commande auto"
+      },
+      {
+        "command": "claudeSessions.addToGroup",
+        "title": "Ajouter à un espace",
+        "icon": "$(folder-library)"
+      },
+      {
+        "command": "claudeSessions.session.preCommand",
+        "title": "Envoyer une commande",
+        "icon": "$(terminal)"
+      },
+      {
+        "command": "claudeSessions.session.initMessage",
+        "title": "Envoyer un message",
+        "icon": "$(comment)"
+      },
+      {
+        "command": "claudeSessions.setting.filterMode",
+        "title": "Reglage filtre projets"
+      },
+      {
+        "command": "claudeSessions.espaces.removeSession",
+        "title": "Retirer de l'espace",
+        "icon": "$(close)"
+      },
+      {
+        "command": "claudeSessions.session.tmateInfo",
+        "title": "Infos tmate (SSH)",
+        "icon": "$(remote)"
+      },
+      {
+        "command": "claudeSessions.insertPathToMessage",
+        "title": "Inserer dans le message",
+        "icon": "$(comment)"
+      },
+      {
+        "command": "claudeSessions.deleteConversation",
+        "title": "Supprimer la conversation",
+        "icon": "$(trash)"
+      },
+      {
+        "command": "claudeSessions.espaces.launchSession",
+        "title": "Lancer la session",
+        "icon": "$(play)"
+      }
+    ],
+    "menus": {
+      "view/title": [
+        {
+          "command": "claudeSessions.searchProject",
+          "when": "view == claudeSessions.projects",
+          "group": "navigation@0"
+        },
+        {
+          "command": "claudeSessions.addProject",
+          "when": "view == claudeSessions.projects",
+          "group": "navigation@1"
+        },
+        {
+          "command": "claudeSessions.filterAll",
+          "when": "view == claudeSessions.projects && claudeSessions.filterMode != 'active' && claudeSessions.filterMode != 'focused'",
+          "group": "navigation@2"
+        },
+        {
+          "command": "claudeSessions.filterActive",
+          "when": "view == claudeSessions.projects && claudeSessions.filterMode == 'active'",
+          "group": "navigation@2"
+        },
+        {
+          "command": "claudeSessions.filterFocused",
+          "when": "view == claudeSessions.projects && claudeSessions.filterMode == 'focused'",
+          "group": "navigation@2"
+        },
+        {
+          "command": "claudeSessions.collapseAll",
+          "when": "view == claudeSessions.projects",
+          "group": "navigation@3"
+        },
+        {
+          "command": "claudeSessions.newSession",
+          "when": "view == claudeSessions.active",
+          "group": "navigation@0"
+        },
+        {
+          "command": "claudeSessions.searchSession",
+          "when": "view == claudeSessions.active",
+          "group": "navigation@1"
+        },
+        {
+          "command": "claudeSessions.filterSessionAll",
+          "when": "view == claudeSessions.active && claudeSessions.sessionFilter != 'working' && claudeSessions.sessionFilter != 'unread' && claudeSessions.sessionFilter != 'read'",
+          "group": "navigation@2"
+        },
+        {
+          "command": "claudeSessions.filterSessionWorking",
+          "when": "view == claudeSessions.active && claudeSessions.sessionFilter == 'working'",
+          "group": "navigation@2"
+        },
+        {
+          "command": "claudeSessions.filterSessionUnread",
+          "when": "view == claudeSessions.active && claudeSessions.sessionFilter == 'unread'",
+          "group": "navigation@2"
+        },
+        {
+          "command": "claudeSessions.filterSessionRead",
+          "when": "view == claudeSessions.active && claudeSessions.sessionFilter == 'read'",
+          "group": "navigation@2"
+        },
+        {
+          "command": "claudeSessions.toggleSort",
+          "when": "view == claudeSessions.active",
+          "group": "navigation@3"
+        },
+        {
+          "command": "claudeSessions.globalNotifNotifySound",
+          "when": "view == claudeSessions.active && claudeSessions.globalNotifyMode == 'notifySound'",
+          "group": "navigation@4"
+        },
+        {
+          "command": "claudeSessions.globalNotifMuted",
+          "when": "view == claudeSessions.active && claudeSessions.globalNotifyMode == 'muted'",
+          "group": "navigation@4"
+        },
+        {
+          "command": "claudeSessions.globalNotifNotify",
+          "when": "view == claudeSessions.active && claudeSessions.globalNotifyMode == 'notify'",
+          "group": "navigation@4"
+        },
+        {
+          "command": "claudeSessions.globalNotifSound",
+          "when": "view == claudeSessions.active && claudeSessions.globalNotifyMode == 'sound'",
+          "group": "navigation@4"
+        },
+        {
+          "command": "claudeSessions.toggleFullView",
+          "when": "view == claudeSessions.active",
+          "group": "navigation@6"
+        },
+        {
+          "command": "claudeSessions.espaces.search",
+          "when": "view == claudeSessions.espaces",
+          "group": "navigation@0"
+        },
+        {
+          "command": "claudeSessions.espaces.new",
+          "when": "view == claudeSessions.espaces",
+          "group": "navigation@1"
+        },
+        {
+          "command": "claudeSessions.espaces.save",
+          "when": "view == claudeSessions.espaces",
+          "group": "navigation@2"
+        },
+        {
+          "command": "claudeSessions.espaces.filterAll",
+          "when": "view == claudeSessions.espaces && claudeSessions.espaceFilter == 'all'",
+          "group": "navigation@3"
+        },
+        {
+          "command": "claudeSessions.espaces.filterActive",
+          "when": "view == claudeSessions.espaces && claudeSessions.espaceFilter == 'active'",
+          "group": "navigation@3"
+        },
+        {
+          "command": "claudeSessions.espaces.sort",
+          "when": "view == claudeSessions.espaces",
+          "group": "navigation@4"
+        },
+        {
+          "command": "claudeSessions.sessionScopeAll",
+          "when": "view == claudeSessions.active && claudeSessions.sessionScopeFilter == 'all'",
+          "group": "navigation@5"
+        },
+        {
+          "command": "claudeSessions.sessionScopeFocus",
+          "when": "view == claudeSessions.active && claudeSessions.sessionScopeFilter == 'espaceFocus'",
+          "group": "navigation@5"
+        },
+        {
+          "command": "claudeSessions.sessionScopeActive",
+          "when": "view == claudeSessions.active && claudeSessions.sessionScopeFilter == 'espaceActive'",
+          "group": "navigation@5"
+        }
+      ],
+      "view/item/context": [
+        {
+          "command": "claudeSessions.newSession",
+          "when": "viewItem == project",
+          "group": "inline@1"
+        },
+        {
+          "command": "claudeSessions.revealInExplorer",
+          "when": "viewItem == project",
+          "group": "inline@0"
+        },
+        {
+          "command": "claudeSessions.cycleNotifyMuted",
+          "when": "viewItem =~ /Muted$/",
+          "group": "inline@0"
+        },
+        {
+          "command": "claudeSessions.cycleNotifyNotify",
+          "when": "viewItem =~ /^session(Active)?Notify$/",
+          "group": "inline@0"
+        },
+        {
+          "command": "claudeSessions.cycleNotifySound",
+          "when": "viewItem =~ /^session(Active)?Sound$/",
+          "group": "inline@0"
+        },
+        {
+          "command": "claudeSessions.cycleNotifyNotifySound",
+          "when": "viewItem =~ /NotifySound$/",
+          "group": "inline@0"
+        },
+        {
+          "command": "claudeSessions.stopSession",
+          "when": "viewItem =~ /^session(Active)?(Muted|Notify|Sound|NotifySound)$/",
+          "group": "inline@1"
+        },
+        {
+          "command": "claudeSessions.addToGroup",
+          "when": "viewItem =~ /^session(Active)?(Muted|Notify|Sound|NotifySound)$/",
+          "group": "2_group@1"
+        },
+        {
+          "command": "claudeSessions.session.preCommand",
+          "when": "viewItem =~ /^session(Active)?(Muted|Notify|Sound|NotifySound)$/",
+          "group": "3_actions@1"
+        },
+        {
+          "command": "claudeSessions.session.initMessage",
+          "when": "viewItem =~ /^session(Active)?(Muted|Notify|Sound|NotifySound)$/",
+          "group": "3_actions@2"
+        },
+        {
+          "command": "claudeSessions.session.tmateInfo",
+          "when": "viewItem =~ /^session(Active)?(Muted|Notify|Sound|NotifySound)$/ && claudeSessions.tmateEnabled",
+          "group": "3_actions@3"
+        },
+        {
+          "command": "claudeSessions.deleteConversation",
+          "when": "viewItem =~ /^session(Active)?(Muted|Notify|Sound|NotifySound)$/",
+          "group": "4_danger@1"
+        },
+        {
+          "command": "claudeSessions.newFile",
+          "when": "viewItem == project || viewItem == projectDir",
+          "group": "1_new@1"
+        },
+        {
+          "command": "claudeSessions.newFolder",
+          "when": "viewItem == project || viewItem == projectDir",
+          "group": "1_new@2"
+        },
+        {
+          "command": "claudeSessions.renameItem",
+          "when": "viewItem == project || viewItem == projectDir || viewItem == projectFile",
+          "group": "2_edit@1"
+        },
+        {
+          "command": "claudeSessions.deleteItem",
+          "when": "viewItem == project || viewItem == projectDir || viewItem == projectFile",
+          "group": "2_edit@2"
+        },
+        {
+          "command": "claudeSessions.copyPath",
+          "when": "viewItem == project || viewItem == projectDir || viewItem == projectFile",
+          "group": "3_copy@1"
+        },
+        {
+          "command": "claudeSessions.copyRelativePath",
+          "when": "viewItem == project || viewItem == projectDir || viewItem == projectFile",
+          "group": "3_copy@2"
+        },
+        {
+          "command": "claudeSessions.revealInExplorer",
+          "when": "viewItem == project || viewItem == projectDir || viewItem == projectFile",
+          "group": "4_nav@1"
+        },
+        {
+          "command": "claudeSessions.openInTerminal",
+          "when": "viewItem == project || viewItem == projectDir",
+          "group": "4_nav@2"
+        },
+        {
+          "command": "claudeSessions.openToSide",
+          "when": "viewItem == projectFile",
+          "group": "1_open@1"
+        },
+        {
+          "command": "claudeSessions.copyItem",
+          "when": "viewItem == project || viewItem == projectDir || viewItem == projectFile",
+          "group": "2_edit@3"
+        },
+        {
+          "command": "claudeSessions.cutItem",
+          "when": "viewItem == project || viewItem == projectDir || viewItem == projectFile",
+          "group": "2_edit@4"
+        },
+        {
+          "command": "claudeSessions.pasteItem",
+          "when": "viewItem == project || viewItem == projectDir",
+          "group": "2_edit@5"
+        },
+        {
+          "command": "claudeSessions.findInFolder",
+          "when": "viewItem == project || viewItem == projectDir",
+          "group": "4_nav@3"
+        },
+        {
+          "command": "claudeSessions.revealInOS",
+          "when": "viewItem == project || viewItem == projectDir || viewItem == projectFile",
+          "group": "4_nav@4"
+        },
+        {
+          "command": "claudeSessions.insertPathToMessage",
+          "when": "viewItem == project || viewItem == projectDir || viewItem == projectFile",
+          "group": "4_nav@5"
+        },
+        {
+          "command": "claudeSessions.sendPathToTerminal",
+          "when": "viewItem == project || viewItem == projectDir || viewItem == projectFile",
+          "group": "4_nav@6"
+        },
+        {
+          "command": "claudeSessions.downloadFile",
+          "when": "viewItem == projectFile",
+          "group": "5_transfer@1"
+        },
+        {
+          "command": "claudeSessions.downloadFolder",
+          "when": "viewItem == project || viewItem == projectDir",
+          "group": "5_transfer@1"
+        },
+        {
+          "command": "claudeSessions.moveItem",
+          "when": "viewItem == projectDir || viewItem == projectFile",
+          "group": "2_edit@6"
+        },
+        {
+          "command": "claudeSessions.espaces.restore",
+          "when": "viewItem =~ /^sessionGroup(Inactive|Active|Focused)(None|Partial)$/",
+          "group": "inline@0"
+        },
+        {
+          "command": "claudeSessions.espaces.stop",
+          "when": "viewItem =~ /^sessionGroup(Focused|Active)(AllActive|Partial)$/",
+          "group": "inline@1"
+        },
+        {
+          "command": "claudeSessions.espaces.focus",
+          "when": "viewItem =~ /^sessionGroup(Active|Inactive)/",
+          "group": "inline@2"
+        },
+        {
+          "command": "claudeSessions.espaces.rename",
+          "when": "viewItem =~ /^sessionGroup/",
+          "group": "1_edit@1"
+        },
+        {
+          "command": "claudeSessions.espaces.delete",
+          "when": "viewItem =~ /^sessionGroup/",
+          "group": "1_edit@2"
+        },
+        {
+          "command": "claudeSessions.espaces.launchSession",
+          "when": "viewItem == groupSession",
+          "group": "inline@0"
+        },
+        {
+          "command": "claudeSessions.espaces.removeSession",
+          "when": "viewItem == groupSession",
+          "group": "inline@1"
+        }
+      ],
+      "commandPalette": [
+        {
+          "command": "claudeSessions.cycleNotify",
+          "when": "false"
+        },
+        {
+          "command": "claudeSessions.cycleNotifyMuted",
+          "when": "false"
+        },
+        {
+          "command": "claudeSessions.cycleNotifyNotify",
+          "when": "false"
+        },
+        {
+          "command": "claudeSessions.cycleNotifySound",
+          "when": "false"
+        },
+        {
+          "command": "claudeSessions.cycleNotifyNotifySound",
+          "when": "false"
+        },
+        {
+          "command": "claudeSessions.testSound",
+          "when": "false"
+        },
+        {
+          "command": "claudeSessions.configureSound",
+          "when": "false"
+        },
+        {
+          "command": "claudeSessions.session.preCommand",
+          "when": "false"
+        },
+        {
+          "command": "claudeSessions.session.initMessage",
+          "when": "false"
+        },
+        {
+          "command": "claudeSessions.espaces.removeSession",
+          "when": "false"
+        },
+        {
+          "command": "claudeSessions.session.tmateInfo",
+          "when": "false"
+        },
+        {
+          "command": "claudeSessions.deleteConversation",
+          "when": "false"
+        },
+        {
+          "command": "claudeSessions.espaces.launchSession",
+          "when": "false"
+        }
+      ]
+    },
+    "viewsWelcome": [
+      {
+        "view": "claudeSessions.projects",
+        "contents": "Aucun projet en focus.\n\n[$(filter-filled) Afficher les sessions actives](command:claudeSessions.filterActive)\n\n[$(eye) Afficher tous les projets](command:claudeSessions.filterAll)",
+        "when": "claudeSessions.emptyProjects && claudeSessions.filterMode == 'focused' && claudeSessions.hasActiveSessions"
+      },
+      {
+        "view": "claudeSessions.projects",
+        "contents": "Aucun projet en focus.\n\n[$(eye) Afficher tous les projets](command:claudeSessions.filterAll)\n\n[$(add) Ajouter un projet](command:claudeSessions.addProject)",
+        "when": "claudeSessions.emptyProjects && claudeSessions.filterMode == 'focused' && !claudeSessions.hasActiveSessions"
+      },
+      {
+        "view": "claudeSessions.projects",
+        "contents": "Aucune session active.\n\n[$(eye) Afficher tous les projets](command:claudeSessions.filterAll)\n\n[$(add) Ajouter un projet](command:claudeSessions.addProject)",
+        "when": "claudeSessions.emptyProjects && claudeSessions.filterMode == 'active'"
+      },
+      {
+        "view": "claudeSessions.projects",
+        "contents": "Aucun projet trouve.\n\n[$(add) Ajouter un projet](command:claudeSessions.addProject)",
+        "when": "claudeSessions.emptyProjects && claudeSessions.filterMode != 'active' && claudeSessions.filterMode != 'focused'"
+      },
+      {
+        "view": "claudeSessions.espaces",
+        "contents": "Aucun espace sauvegarde.\n\nLancez des sessions puis cliquez $(save) pour sauvegarder.",
+        "when": "!claudeSessions.hasGroups"
+      }
+    ],
+    "configuration": {
+      "title": "Claude Sessions",
+      "properties": {
+        "claudeSessions.projectsRoot": {
+          "type": "string",
+          "default": "~/github",
+          "description": "Dossier racine contenant les projets"
+        },
+        "claudeSessions.notificationSound": {
+          "type": "string",
+          "default": "auto",
+          "enum": [
+            "auto",
+            "off",
+            "custom"
+          ],
+          "description": "Son de notification: auto (detection WSL/Linux), off, ou custom"
+        },
+        "claudeSessions.notificationSoundCommand": {
+          "type": "string",
+          "default": "",
+          "description": "Commande custom pour le son (si notificationSound = custom)"
+        },
+        "claudeSessions.notificationVolume": {
+          "type": "number",
+          "default": 1,
+          "minimum": 0.1,
+          "maximum": 3,
+          "description": "Volume de notification (0.1 = faible, 1.0 = normal, 3.0 = fort)"
+        },
+        "claudeSessions.effortLevel": {
+          "type": "string",
+          "default": "auto",
+          "enum": [
+            "auto",
+            "low",
+            "medium",
+            "high",
+            "max"
+          ],
+          "enumDescriptions": [
+            "Par defaut (pas de flag --effort)",
+            "Raisonnement minimal, reponses rapides",
+            "Raisonnement modere",
+            "Raisonnement approfondi",
+            "Raisonnement maximum (Opus 4.6 uniquement, plus lent)"
+          ],
+          "description": "Niveau d'effort de raisonnement de Claude au lancement des sessions"
+        }
+      }
+    }
+  },
+  "scripts": {
+    "vscode:prepublish": "npm run compile",
+    "compile": "tsc -p ./",
+    "watch": "tsc -watch -p ./"
+  },
+  "devDependencies": {
+    "@types/node": "^20.0.0",
+    "@types/vscode": "^1.99.1",
+    "typescript": "^5.3.0"
+  }
+}
